@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>ChatApp</title>
+</head>
+<body>
+    <h1>Welcome!</h1>
+    <hr>
+    <input type="text" id="name" placeholder="Enter name..">
+    <button onclick="setName()"  id="btn">Submit</button>
+    <hr>
+    <input type="text" id="msg" placeholder="Enter message..">
+    <button onclick="mySend()">Send</button>
+    <ul id="list"></ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.on('client msg', (msg) => {
+            const entry = document.createElement('li');
+            entry.appendChild(document.createTextNode(msg.username + ": " + msg.msg));
+            document.getElementById('list').appendChild(entry);
+        });
+        function mySend() {
+            const temp = document.getElementById('msg');
+            socket.emit('chat msg', {username: socket.username, msg:temp.value});
+            temp.value = "";
+            return false;
+        }
+        function setName() {
+            const temp = document.getElementById('name');
+            socket.username = temp.value;
+            temp.value = "";
+            document.getElementById('name').style.visibility = 'hidden';
+            document.getElementById('btn').style.visibility = 'hidden';
+            return false;
+        }
+    </script>
+</body>
