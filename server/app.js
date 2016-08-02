@@ -4,6 +4,7 @@ const http = require('http').Server(app);
 const io = new require('socket.io')(http);
 const path = require('path');
 const PORT = 3000;
+const clients = {};
 
 app.use(express.static(path.resolve(__dirname + '/../')));
 
@@ -12,13 +13,18 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('A user connected.');
     socket.on('disconnect', () => {
-        console.log('User disconnected.');
+        const username = clients[socket.id];
+        io.emit('userDc', username);
     });
-    socket.on('chat msg', (msg) => {
+    socket.on('newMsg', (msg) => {
         console.log('Message:', msg);
-        socket.broadcast.emit('client msg', msg);   // Send msg to all clients except sender
+        const data = {username: clients[socket.id], msg: msg};
+        socket.broadcast.emit('client msg', data);   // Send msg to all clients except sender
+    });
+    socket.on('newUser', (msg) => {
+        clients[socket.id] = msg;
+        console.log(clients);
     });
 });
 

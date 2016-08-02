@@ -21,15 +21,22 @@
             entry.appendChild(document.createTextNode(msg.username + ": " + msg.msg));
             document.getElementById('list').appendChild(entry);
         });
+        socket.on('userDc', (msg) => {
+            const entry = document.createElement('li');
+            entry.setAttribute('style', 'list-style: none'); // remove the bullet from li
+            console.log(msg);
+            entry.appendChild(document.createTextNode(msg +' has disconnected.'));
+            document.getElementById('list').appendChild(entry);
+        });
         function mySend() {
             const temp = document.getElementById('msg');
-            socket.emit('chat msg', {username: socket.username, msg:temp.value});
+            socket.emit('newMsg', temp.value);
             temp.value = "";
             return false;
         }
         function setName() {
             const temp = document.getElementById('name');
-            socket.username = temp.value;
+            socket.emit('newUser', temp.value);
             temp.value = "";
             document.getElementById('name').style.visibility = 'hidden';
             document.getElementById('btn').style.visibility = 'hidden';
