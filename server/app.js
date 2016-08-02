@@ -15,6 +15,7 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         const username = clients[socket.id];
+        delete clients[socket.id];
         io.emit('userDc', username);
     });
     socket.on('newMsg', (msg) => {
@@ -24,7 +25,12 @@ io.on('connection', (socket) => {
     });
     socket.on('newUser', (msg) => {
         clients[socket.id] = msg;
-        console.log(clients);
+        const names = [];
+        for(var x in clients) {
+            names.push(clients[x]);
+        }
+        console.log(names);
+        io.emit('newConn', names);
     });
 });
 

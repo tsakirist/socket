@@ -13,9 +13,19 @@
     <input type="text" id="msg" placeholder="Enter message..">
     <button onclick="mySend()">Send</button>
     <ul id="list"></ul>
+    <hr><ul style="list-style: none" id="names">
+    </ul><hr>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
+        socket.on('newConn', (clients) => {
+            document.getElementById('names').innerHTML = '';
+            for(var x of clients) {
+                let entry = document.createElement('li');
+                entry.appendChild(document.createTextNode(x));
+                document.getElementById('names').appendChild(entry);
+            }
+        });
         socket.on('client msg', (msg) => {
             const entry = document.createElement('li');
             entry.appendChild(document.createTextNode(msg.username + ": " + msg.msg));
