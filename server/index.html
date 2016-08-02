@@ -13,8 +13,10 @@
     <input type="text" id="msg" placeholder="Enter message..">
     <button onclick="mySend()">Send</button>
     <ul id="list"></ul>
-    <hr><ul style="list-style: none" id="names">
-    </ul><hr>
+    <hr><h3>Active clients</h3>
+    <ul style="list-style: none" id="names">
+    </ul>
+    <hr>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
@@ -37,6 +39,13 @@
             console.log(msg);
             entry.appendChild(document.createTextNode(msg +' has disconnected.'));
             document.getElementById('list').appendChild(entry);
+            // Check the children of the ul element and delete the user who disconnected
+            const temp = document.getElementById('names').children;
+            for(var x in temp) {
+                if (temp[x].innerHTML == msg) {
+                    temp[x].innerHTML='';
+                }
+            }
         });
         function mySend() {
             const temp = document.getElementById('msg');

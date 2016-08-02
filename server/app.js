@@ -15,8 +15,10 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         const username = clients[socket.id];
-        delete clients[socket.id];
-        io.emit('userDc', username);
+        if(username) {
+	        delete clients[socket.id];
+	        io.emit('userDc', username);
+        }
     });
     socket.on('newMsg', (msg) => {
         console.log('Message:', msg);
