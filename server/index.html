@@ -21,13 +21,18 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        socket.on('active', (clients) => {
-            document.getElementById('names').innerHTML = '';
-            for(var x of clients) {
-                let entry = document.createElement('li');
-                entry.appendChild(document.createTextNode(x));
-                document.getElementById('names').appendChild(entry);
-            }
+        socket.on('active', (client) => {
+            //This was only needed for when i was sending the whole array
+            //Now i just send the new name
+            //document.getElementById('names').innerHTML = '';
+//            for(var x of clients) {
+//                let entry = document.createElement('li');
+//                entry.appendChild(document.createTextNode(x));
+//                document.getElementById('names').appendChild(entry);
+//            }
+            let entry = document.createElement('li');
+            entry.appendChild(document.createTextNode(client));
+            document.getElementById('names').appendChild(entry);
         });
         socket.on('client msg', (msg) => {
             const entry = document.createElement('li');
