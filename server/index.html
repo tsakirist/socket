@@ -13,43 +13,34 @@
     <!--<input type="text" id="msg" placeholder="Enter message..">-->
     <textarea rows="4" cols="60" id="msg" placeholder="Enter message.."></textarea>
     <button onclick="mySend()">Send</button>
-    <ul id="list"></ul>
+    <ul style="list-style: none" id="list"></ul>
     <hr><h3>Active clients</h3>
-    <ul style="list-style: none" id="names">
+    <ul id="names">
     </ul>
     <hr>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
         socket.on('active', (client) => {
-            //This was only needed for when i was sending the whole array
-            //Now i just send the new name
-            //document.getElementById('names').innerHTML = '';
-//            for(var x of clients) {
-//                let entry = document.createElement('li');
-//                entry.appendChild(document.createTextNode(x));
-//                document.getElementById('names').appendChild(entry);
-//            }
             let entry = document.createElement('li');
             entry.appendChild(document.createTextNode(client));
             document.getElementById('names').appendChild(entry);
         });
-        socket.on('client msg', (msg) => {
+        socket.on('clientMsg', (msg) => {
             const entry = document.createElement('li');
             entry.appendChild(document.createTextNode(msg.username + ": " + msg.msg));
             document.getElementById('list').appendChild(entry);
         });
-        socket.on('userDc', (msg) => {
+        socket.on('userDc', (name) => {
             const entry = document.createElement('li');
             entry.setAttribute('style', 'list-style: none'); // remove the bullet from li
-            console.log(msg);
-            entry.appendChild(document.createTextNode(msg +' has disconnected.'));
+            entry.appendChild(document.createTextNode(name +' has disconnected.'));
             document.getElementById('list').appendChild(entry);
             // Check the children of the ul element and delete the user who disconnected
             const temp = document.getElementById('names').children;
-            for(var x in temp) {
-                if (temp[x].innerHTML == msg) {
-                    temp[x].innerHTML='';
+            for(let x in temp) {
+                if (temp[x].innerHTML == name) {
+                    temp[x].parentNode.removeChild(temp[x]);
                 }
             }
         });
