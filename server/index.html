@@ -21,10 +21,21 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        socket.on('active', (client) => {
-            let entry = document.createElement('li');
-            entry.appendChild(document.createTextNode(client));
-            document.getElementById('names').appendChild(entry);
+        socket.on('active', (clients) => {
+            if(!(clients instanceof Array)) {
+                // Its a single name
+                let entry = document.createElement('li');
+                entry.appendChild(document.createTextNode(clients));
+                document.getElementById('names').appendChild(entry);
+            }
+            else {
+                // Its array
+                for(let client of  clients) {
+                    let entry = document.createElement('li');
+                    entry.appendChild(document.createTextNode(client));
+                    document.getElementById('names').appendChild(entry);
+                }
+            }
         });
         socket.on('clientMsg', (msg) => {
             const entry = document.createElement('li');
