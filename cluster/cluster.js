@@ -5,6 +5,7 @@ const redisHost = 'localhost', redisPort = 6379;
 let clients = {};
 
 if(cluster.isMaster) {
+
     console.log('Master cluster setting up ' + numWorkers + ' workers...');
     for(let i=0; i<numWorkers; i++) {
         const worker = cluster.fork();
@@ -32,31 +33,33 @@ else {
     const io = new require('socket.io')(http);
     let users = [];
 
+    // Capture messages from master
     process.on('message', (msg) => {
         console.log(`Worker ${process.pid} , received msg from master`, msg);
-        console.log('NewUser:', msg.newUser);
-        users.push(msg.newUser);
+        if(msg.newUser) {
+            users.push(msg.newUser);
+        }
+        else {
+            removeUser(msg.removedUser);
+        }
     });
 
     io.adapter(redis({host: redisHost, port: redisPort}));
+    // Forcing the use of websocket as transport, the sticky-session problem is solved.(The problem was the failure of handshake at start)
+    io.set('transports',['websocket']);
+    // Apparently the above command isn't needed, only need to change it from the client.
     io.on('connection', (socket) => {
         console.log('Connected Worker id', process.pid);
-        //sendActive(socket);
-        sendUsers(socket);
+        sendActiveUsers(socket);
         socket.on('disconnect', () => {
-            //TODO need to check users buffer (MAYBE)
             const username = clients[socket.id];
             console.log(`Username: ${username} disconnected`);
             if (username) {
                 console.log(`Disconnected ${process.pid} ${username}`);
                 delete clients[socket.id];
-                console.log(username);
-                console.log(users);
-                if (users.indexOf(username) != -1) {
-                    users.splice(users.indexOf(username, 1));
-                }
-                console.log(users);
+                removeUser(username);
                 io.emit('userDc', username);
+                sendRemovedUserToMaster(username);
             }
         });
         socket.on('newMsg', (msg) => {
@@ -68,26 +71,38 @@ else {
         socket.on('newUser', (name) => {
             clients[socket.id] = name;
             console.log(`Worker ${process.pid} updated clients name`, name);
-            sendActive(io, name);
-            sendNameToMaster(name);
-            // Add every new name to worker users array
+            sendActiveUser(io, name);
+            sendNewUserToMaster(name);
+            // Add every new name to worker {users} array
             users.push(name);
         });
     });
 
-    function sendActive(socket, name) {
+    function sendActiveUser(socket, name) {
         console.log('Sending ', name);
         socket.emit('active', name);
     }
 
-    function sendUsers(socket) {
+    function sendActiveUsers(socket) {
         if(users.length) {
             console.log('Sending users already', users);
             socket.emit('active', users);
         }
     }
 
-    function sendNameToMaster(name) {
+    function sendNewUserToMaster(name) {
         process.send({newUser: name});
+    }
+
+    function sendRemovedUserToMaster(name) {
+        process.send({removedUser: name});
+    }
+
+    function removeUser(name) {
+        if(users.indexOf(name) != -1) {
+            console.log(users);
+            users.splice(users.indexOf(name, 1));
+            console.log(users);
+        }
     }
 }
