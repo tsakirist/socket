@@ -4,7 +4,7 @@ class Worker {
 
     constructor(redisOptions) {
         this._http = require('../server/app');
-        this.io = new require('socket.io')(this._http);
+        this._io = new require('socket.io')(this._http);
         this.clients = {};
         this.users = [];
         this._redisHost = redisOptions.host;
@@ -22,11 +22,11 @@ class Worker {
             }
         });
 
-        this.io.adapter(redis({host: this._redisHost, port: this._redisPort}));
+        this._io.adapter(redis({host: this._redisHost, port: this._redisPort}));
         // Forcing the use of websocket as transport, the sticky-session problem is solved.(The problem was the failure of handshake at start)
-        this.io.set('transports',['websocket']);
+        this._io.set('transports',['websocket']);
         // Apparently the above command isn't needed, only need to change it from the client.
-        this.io.on('connection', (socket) => {
+        this._io.on('connection', (socket) => {
             console.log('Connected Worker id', process.pid);
             this.sendActiveUsers(socket);
             socket.on('disconnect', () => {
@@ -35,18 +35,18 @@ class Worker {
                     console.log(`Disconnected ${process.pid} ${username}`);
                     delete this.clients[socket.id];
                     this.removeUser(username);
-                    this.io.emit('userDc', username);
+                    this._io.emit('userDc', username);
                     this.sendRemovedUserToMaster(username);
                 }
             });
             socket.on('newMsg', (msg) => {
                 const data = {username: this.clients[socket.id], msg: msg};
                 // socket.broadcast.emit('clientMsg', data); // Send message to everyone besides myself
-                this.io.emit('clientMsg', data);
+                this._io.emit('clientMsg', data);
             });
             socket.on('newUser', (name) => {
                 this.clients[socket.id] = name;
-                this.sendActiveUser(this.io, name);
+                this.sendActiveUser(this._io, name);
                 this.sendNewUserToMaster(name);
                 // Add every new name to worker {users} array
                 this.users.push(name);
