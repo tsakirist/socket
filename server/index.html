@@ -10,7 +10,6 @@
     <input type="text" id="name" placeholder="Enter name..">
     <button onclick="setName()"  id="btn">Submit</button>
     <hr>
-    <!--<input type="text" id="msg" placeholder="Enter message..">-->
     <textarea rows="4" cols="60" id="msg" placeholder="Enter message.."></textarea>
     <button onclick="mySend()">Send</button>
     <ul style="list-style: none" id="list"></ul>
@@ -18,7 +17,6 @@
     <ul id="names">
     </ul>
     <hr>
-    <!--<script src="/socket.io/socket.io.js"></script>-->
     <script src="/node_modules/socket.io-client/socket.io.js"></script>
     <script>
         // Forcing the use of websocket as transport, the sticky-session problem is solved.(The problem was the failure of handshake at start)
