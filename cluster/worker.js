@@ -74,9 +74,7 @@ class Worker {
 
     removeUser(name) {
        if(this.users.indexOf(name) != -1) {
-            console.log(this.users);
             this.users.splice(this.users.indexOf(name), 1);
-            console.log(this.users);
         }
     }
 }
