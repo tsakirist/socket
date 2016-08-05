@@ -46,7 +46,7 @@
         });
         socket.on('userDc', (name) => {
             const entry = document.createElement('li');
-            entry.setAttribute('style', 'list-style: none'); // remove the bullet from li
+            entry.setAttribute('style', 'list-style: none; color: red'); // remove the bullet from li
             entry.appendChild(document.createTextNode(name +' has disconnected.'));
             document.getElementById('list').appendChild(entry);
             // Check the children of the ul element and delete the user who disconnected
