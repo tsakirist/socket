@@ -2,6 +2,10 @@
 
 Simple chatroom between clients, using **socket.io** and **clustering**.
 
+## Branches
+  * Master: Uses **_WebSockets_** as main transport, no **xhr polling, etc**.
+  * Sticky: Uses **_sticky-session_** to balance request according to their **IP address**.
+
 ## Install
 Install dependencies.
 ```

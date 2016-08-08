@@ -1,4 +1,5 @@
 'use strict';
+
 const redis = require('socket.io-redis');
 
 class Worker {

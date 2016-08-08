@@ -1,4 +1,5 @@
 'use strict';
+
 const cluster = require('cluster');
 
 class Master {
@@ -20,7 +21,7 @@ class Master {
             worker.on('message', (name) => {
                 console.log(`Received message from worker ${worker.process.pid} msg:`, name);
                 for(let wid in cluster.workers) {
-                    if(cluster.workers.hasOwnProperty(wid) && cluster.workers[wid] !== worker) {
+                    if(cluster.workers[wid] !== worker) {
                         console.log(`Sending to worker ${cluster.workers[wid].process.pid} name:`,name);
                         cluster.workers[wid].send(name);
                     }
