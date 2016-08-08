@@ -14,12 +14,13 @@ class Worker {
 
     start() {
         process.on('message', (msg) => {
-            console.log(`Worker ${process.pid} , received msg from master`, msg);
-            if(msg.newUser) {
-                this.users.push(msg.newUser);
-            }
-            else {
-                this.removeUser(msg.removedUser);
+            switch (msg.action) {
+                case 'insert':
+                    this.users.push(msg.data);
+                    break;
+                case 'remove':
+                    this.removeUser(msg.data);
+                    break;
             }
         });
 
@@ -61,11 +62,11 @@ class Worker {
     }
 
      sendNewUserToMaster(name) {
-        process.send({newUser: name});
+         process.send({action: 'insert', data: name});
     }
 
      sendRemovedUserToMaster(name) {
-        process.send({removedUser: name});
+         process.send({action: 'remove', data: name});
     }
 
     removeUser(name) {
