@@ -8,7 +8,7 @@ class Master {
             console.log('Worker ' + worker.process.pid + ' is online');
             worker.on('message', (name) => {
                 for(let wid in cluster.workers) {
-                    if(cluster.workers.hasOwnProperty(wid) && cluster.workers[wid] !== worker) {
+                    if(cluster.workers[wid] !== worker) {
                         cluster.workers[wid].send(name);
                     }
                 }
