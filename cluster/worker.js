@@ -41,14 +41,12 @@ class Worker {
             });
             socket.on('newMsg', (msg) => {
                 const data = {username: this.clients[socket.id], msg: msg};
-                // socket.broadcast.emit('clientMsg', data); // Send message to everyone besides myself
                 this._io.emit('clientMsg', data);
             });
             socket.on('newUser', (name) => {
                 this.clients[socket.id] = name;
                 this.sendActiveUser(this._io, name);
                 this.sendNewUserToMaster(name);
-                // Add every new name to worker {users} array
                 this.users.push(name);
             });
         });

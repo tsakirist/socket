@@ -1,6 +1,7 @@
 const cluster = require('cluster');
 const numWorkers = require('os').cpus().length;
-const redisHost = 'localhost', redisPort = 6379;
+const config = require('./config/config.json');
+const redisOptions = {host: config.redisHost, port: config.redisPort};
 
 if (cluster.isMaster) {
     const Master = require('./cluster/master');
@@ -9,6 +10,6 @@ if (cluster.isMaster) {
 }
 else {
     const Worker = require('./cluster/worker');
-    const server = new Worker({host:redisHost, port:redisPort});
-    server.start();
+    const worker = new Worker(redisOptions);
+    worker.start();
 }

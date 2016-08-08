@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const router = require('../router/router');
-const PORT = 3000;
+const PORT = require('../config/config.json').PORT;
 
 app.use(router);
 
