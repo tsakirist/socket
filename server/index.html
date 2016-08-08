@@ -21,7 +21,8 @@
     <script src="/node_modules/socket.io-client/socket.io.js"></script>
     <script>
         // Forcing the use of websocket as transport, the sticky-session problem is solved.(The problem was the failure of handshake at start)
-        const socket = io({transports: ['websocket']});
+//        const socket = io({transports: ['websocket']});
+        const socket = io();
         socket.on('active', (clients) => {
             if(!(clients instanceof Array)) {
                 // Its a single name

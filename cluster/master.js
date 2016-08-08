@@ -1,17 +1,7 @@
+'use strict';
 const cluster = require('cluster');
 
 class Master {
-    
-    constructor(numWorkers) {
-        this.initWorkers(numWorkers);
-    }
-
-    initWorkers(numWorkers) {
-        console.log('Master cluster setting up ' + numWorkers + ' workers...');
-        for(let i=0; i<numWorkers; i++) {
-            cluster.fork();
-        }
-    }
 
     start() {
         cluster.on('online', (worker) => {

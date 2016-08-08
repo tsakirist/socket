@@ -1,3 +1,4 @@
+'use strict';
 const redis = require('socket.io-redis');
 
 class Worker {
@@ -23,9 +24,6 @@ class Worker {
         });
 
         this._io.adapter(redis({host: this._redisHost, port: this._redisPort}));
-        // Forcing the use of websocket as transport, the sticky-session problem is solved.(The problem was the failure of handshake at start)
-        this._io.set('transports',['websocket']);
-        // Apparently the above command isn't needed, only need to change it from the client.
         this._io.on('connection', (socket) => {
             console.log('Connected Worker id', process.pid);
             this.sendActiveUsers(socket);

@@ -1,11 +1,13 @@
-const cluster = require('cluster');
-const numWorkers = require('os').cpus().length;
+'use strict';
+const sticky = require('sticky-session');
 const config = require('./config/config.json');
 const redisOptions = {host: config.redisHost, port: config.redisPort};
+const server = require('./server/app');
+const PORT = config.PORT;
 
-if (cluster.isMaster) {
+if(!sticky.listen(server, PORT)) {
     const Master = require('./cluster/master');
-    const master = new Master(numWorkers);
+    const master = new Master();
     master.start();
 }
 else {
