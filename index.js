@@ -1,3 +1,4 @@
+'use strict';
 const cluster = require('cluster');
 const numWorkers = require('os').cpus().length;
 const config = require('./config/config.json');
