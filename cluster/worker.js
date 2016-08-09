@@ -1,9 +1,9 @@
 'use strict';
-const redis = require('socket.io-redis');
 
 class Worker {
 
     constructor(redisOptions) {
+        this.redis = require('socket.io-redis');
         this._http = require('../server/app');
         this._io = new require('socket.io')(this._http);
         this.clients = {};
@@ -24,7 +24,7 @@ class Worker {
             }
         });
 
-        this._io.adapter(redis({host: this._redisHost, port: this._redisPort}));
+        this._io.adapter(this.redis({host: this._redisHost, port: this._redisPort}));
         this._io.on('connection', (socket) => {
             console.log('Connected Worker id', process.pid);
             this.sendActiveUsers(socket);

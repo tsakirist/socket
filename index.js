@@ -1,4 +1,5 @@
 'use strict';
+
 const sticky = require('sticky-session');
 const config = require('./config/config.json');
 const redisOptions = {host: config.redisHost, port: config.redisPort};
