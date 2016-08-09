@@ -67,8 +67,8 @@
         function setName() {
             const temp = document.getElementById('name');
             socket.emit('newUser', temp.value);
-            document.getElementById('name').style.visibility = 'hidden';
-            document.getElementById('btn').style.visibility = 'hidden';
+            document.getElementById('name').style.display = 'none';
+            document.getElementById('btn').style.display = 'none';
             document.getElementById('myName').innerHTML = "You are: " + temp.value;
             return false;
         }
