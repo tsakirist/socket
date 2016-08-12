@@ -58,8 +58,7 @@
         });
         function mySend() {
             const temp = document.getElementById('msg');
-            console.log(document.getElementById('name').value);
-            if(document.getElementById('name').value && document.getElementById('name').style.visibility == 'hidden')
+            if(document.getElementById('name').value && document.getElementById('name').style.display == 'none')
                 socket.emit('newMsg', temp.value);
             temp.value = "";
             return false;
