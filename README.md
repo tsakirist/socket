@@ -1,6 +1,6 @@
 # Socket
 
-Simple chatroom between clients, using **socket.io** and **clustering**.
+Simple chatroom between clients, using **socket.io** , **clustering** and **redis-server**.
 
 ## Branches
   * Master: Uses **_WebSockets_** as main transport, no **xhr polling, etc**.
@@ -10,6 +10,7 @@ Simple chatroom between clients, using **socket.io** and **clustering**.
 Install dependencies.
 ```
   npm install
+  sudo apt-get install redis-server
 ```
 
 ## Explanation
