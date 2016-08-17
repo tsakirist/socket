@@ -1,4 +1,5 @@
-# Socket
+Socket
+==========
 
 Simple chatroom between clients, using **socket.io** , **clustering** and **redis-server**.
 
